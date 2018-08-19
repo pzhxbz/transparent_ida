@@ -4,28 +4,30 @@
 
 效果：
 
-![preview](preview.png)
+![preview](preview.jpg)
 
 
 
-todolist：
+逆向工作已经完成，通过逆向发现主要的三个窗口类型为QPixmap，在3E5F0创建之后再传进去进行绘画操作，而在这个QPixmap创建的时候，没有进行背景颜色的初始化，导致背景一直为黑色。
 
-有一些窗口没有透明化，因为估计那几个窗口的类的某些方法被重写了，普通的方法并没有办法更改背景的透明度，而现在测试的可以改那几个窗口的脚本如下：
 
-```python
-from PyQt5.Qt import qApp
-from PyQt5.QtWidgets import QWidget,QGraphicsOpacityEffect
-from PyQt5.QtCore import Qt
-c = qApp.allWidgets()
-for i in c:
-    if i.objectName()=='qt_scrollarea_viewport' :
-        opacityEffect = QGraphicsOpacityEffect()
-        i.setGraphicsEffect(opacityEffect)
-        opacityEffect.setOpacity(0.5);
-```
 
-但是这样的改法会导致字体也变透明，影响了正常的使用
+而传入各个窗口的不同绘画窗口之后，最终都会到361D0进行各个文字及背景的绘画。
 
-目前正在尝试一些其他的歪门邪道来对付着几个窗口（
 
-嗯，那几个窗口的绘图函数在sub_361D0，真难，他也不是用背景设置来搞的，而是直接用Brush刷成背景颜色的，思考中。。。。。。。
+
+patch的思路就是在QPixmap创建的时候帮他进行背景颜色的初始化，再patch掉后面填充背景的逻辑。即可实现透明
+
+目前的patch（仅限32位的那个ida）：
+
+![patch](patch.png)
+
+
+
+todo：
+
+把patch逻辑写进插件，实现自动patch。
+
+优化patch，目前还有一些bug。
+
+再调整各个部件的透明度，再更好看一点:P
