@@ -4,7 +4,7 @@
 
 效果：
 
-![preview](preview.jpg)
+![preview](preview.png)
 
 
 
@@ -16,17 +16,13 @@
 
 
 
-patch的思路就是在QPixmap创建的时候帮他进行背景颜色的初始化，再patch掉后面填充背景的逻辑。即可实现透明
+patch的思路就是在QPixmap创建的时候帮他进行背景颜色的初始化，再patch掉后面填充背景的逻辑。即可实现透明。
 
-目前的patch（仅限32位的那个ida）：
+已经完成把patch逻辑写进插件，实现了自动patch。
 
-![patch](patch.png)
-
-
+并且脱离了ida skin插件，因为要运行patch，没法以一个主题的形式存在了（
 
 todo：
-
-把patch逻辑写进插件，实现自动patch。
 
 优化patch，目前还有一些bug。
 
